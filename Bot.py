@@ -10,20 +10,38 @@ Author: Alvin Lin (alvin.lin.dev@gmail.com)
 
 import math
 import pyautogui
-import sys
+# import sys
 import time
+import random
 
+
+def rand(num):
+    t = num*0.2
+    return num + random.uniform(-t, t);
+
+# 키보드 제어 불가능시 세이프
 pyautogui.FAILSAFE = True
+
 
 class NoKeyboardException(Exception):
     def __init__(self):
         pass
+
     def __str__(self):
         return "No On-Screen Keyboard found. Try redo-ing your screenshot."
 
-class Bot():
+
+class Bot:
     def __init__(self):
-        self.osk = pyautogui.locateOnScreen('data/osk.png')
+        retry_counter = 0
+        while retry_counter < 5:
+            self.osk = pyautogui.locateOnScreen('data/osk.png')
+            if self.osk is None:
+                time.sleep(1)
+                retry_counter += 1
+            else:
+                time.sleep(1)
+                retry_counter = 10
         if self.osk is None:
             raise NoKeyboardException()
         self.time_created = time.time()
@@ -64,11 +82,13 @@ class Bot():
         Given a key to click and a duration to click it for, this method will
         click the key for the given duration.
         """
+        temp = pyautogui.position();
         self._moveTo(key)
         pyautogui.mouseDown()
-        time.sleep(duration)
+        time.sleep(rand(duration))
         pyautogui.mouseUp()
-        time.sleep(0.25)
+        self._moveTo(temp)
+        time.sleep(0.01) #0.25
 
     def checkHealth(self, pot_key):
         """

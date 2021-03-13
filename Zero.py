@@ -20,58 +20,44 @@ need to find a place to stand where mobs do not or can not attack you.
 
 Author: Alvin Lin (alvin.lin.dev@gmail)
 """
+import ctypes
 
 from Bot import Bot
 from Keys import Keys
+from Macro import Macro
 
+import keyboard
+import pywinauto as pwa
 import time
+import pyautogui
+import threading
+import random
+import sys
 
-def main():
-    bot = Bot()
-    time.sleep(1)
-    iterations_run = 0
 
+def exitButton():
     while True:
-        print bot.getDebugText()
-        bot.checkHealth(Keys.CTRL)
-        bot.click(Keys.LEFT, 0.1)
-        bot.click(Keys.D, 0.25)
-        bot.click(Keys.D, 0.25)
-        bot.checkHealth(Keys.CTRL)
-        bot.click(Keys.S, 0.25)
-        bot.click(Keys.S, 0.25)
-        bot.checkHealth(Keys.CTRL)
-        if iterations_run % 2 == 1:
-            bot.click(Keys.A, 0.25)
-            bot.click(Keys.A, 0.25)
-            bot.click(Keys.A, 0.25)
+        if keyboard.is_pressed('t'):  # if key 'q' is pressed
+            sys.exit(1)
+        else:
+            pass
 
-        print bot.getDebugText()
-        bot.checkHealth(Keys.CTRL)
-        bot.click(Keys.RIGHT, 0.5)
-        bot.click(Keys.D, 0.25)
-        bot.click(Keys.D, 0.25)
-        bot.checkHealth(Keys.CTRL)
-        bot.click(Keys.S, 0.25)
-        bot.click(Keys.S, 0.25)
-        bot.checkHealth(Keys.CTRL)
-        if iterations_run % 2 == 0:
-            bot.click(Keys.A, 0.25)
-            bot.click(Keys.A, 0.25)
-            bot.click(Keys.A, 0.25)
-
-        bot.checkHealth(Keys.CTRL)
-
-        # Try to clear mobs every 2 iterations with ultimate ability
-        if iterations_run % 2 == 0:
-            bot.click(Keys.DEL, 0.25)
-
-        # Buff self every 5 iterations
-        if iterations_run % 5 == 0:
-            bot.click(Keys.END, 0.25)
-        print bot.getDebugText()
-
-    iterations_run += 1
 
 if __name__ == "__main__":
-    main()
+
+    if ctypes.windll.shell32.IsUserAnAdmin():
+        print('관리자권한으로 실행된 프로세스입니다.')
+    else:
+        print('일반권한으로 실행된 프로세스입니다.')
+
+    t = threading.Thread(target=exitButton, args=())
+    t.start()
+    while True:
+        if keyboard.is_pressed('q'):  # if key 'q' is pressed
+            print('You Pressed A Key!')
+            break  # finishing the loop
+        else:
+            pass
+
+    macro = Macro()
+
